@@ -1,11 +1,14 @@
 const express = require('express');
 const mongoose = require('mongoose');
-const Contatos = require('./models/contatos');
-
 require('dotenv').config();
 
+// App
 const app = express();
+app.use(express.json());
+app.use(express.urlencoded({extended: true}));
 
+
+// Database
 mongoose.connect(process.env.DATABASE_CONNECTION_STRING, {
   useNewUrlParser: true,
   useFindAndModify: true,
@@ -37,7 +40,13 @@ process.on('SIGINT', () => {
   });
 });
 
+// Load models
+const Contatos = require('./models/contatos');
+
+// Load routes
 const indexRoutes = require('./routes/index-routes');
 app.use('/', indexRoutes);
+const contatosRoutes = require('./routes/contatos-routes');
+app.use('/contatos', contatosRoutes);
 
 module.exports = app;
